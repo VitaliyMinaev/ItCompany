@@ -31,13 +31,19 @@ public class Company : BaseCompany
         if (departmentToReceive == null)
             throw new InvalidOperationException("There is no available departments");
 
-        var project = clientProject.ToCompanyProject();
+        var project = clientProject.ToCompanyProject(CompanyProject.EvaluateComplexity(clientProject.Deadline));
         departmentToReceive.ReceiveProject(project);
-        // To do ...
+        departmentToReceive.StartWorkOnProject();
+        
         _projects.Add(project);
         
         return true;
     }
+    public override void AddDepartment(IDepartment department)
+    {
+        _departments.Add(department);
+    }
+
 
     protected virtual bool CanAcceptProject()
     {

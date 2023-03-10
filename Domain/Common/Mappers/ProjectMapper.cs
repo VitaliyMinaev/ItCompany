@@ -5,8 +5,9 @@ namespace Domain.Common.Mappers;
 
 public static class ProjectMapper
 {
-    public static CompanyProject ToCompanyProject(this ClientProject clientProject)
+    public static CompanyProject ToCompanyProject(this ClientProject clientProject, Complexity complexity)
     {
-        return new CompanyProject(clientProject.Id, clientProject.Title, clientProject.ExpectedPrice, clientProject.Deadline);
+        return new CompanyProject(clientProject.Id, clientProject.Title, clientProject.ExpectedPrice, 
+            CompanyProject.CalculateIterations(clientProject.Deadline), clientProject.Deadline);
     }
 }
