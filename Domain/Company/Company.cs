@@ -17,7 +17,7 @@ public class Company : BaseCompany, IMoneyWithdraw
     private ILogger? _logger;
 
     private readonly int _projectLimit;
-    public Company(Guid id, string title, int projectLimit = 100) : base(id, title)
+    public Company(Guid id, string name, int projectLimit = 100) : base(id, name)
     {
         _clients = new List<BaseClient>();
         _projects = new List<CompanyProject>();
@@ -29,7 +29,13 @@ public class Company : BaseCompany, IMoneyWithdraw
     public void SetLogger(ILogger logger)
     {
         _logger = logger;
+
+        foreach (var item in _departments)
+        {
+            item.SetLogger(logger);
+        }
     }
+
     public override Guid ReceiveProject(ClientProject clientProject, BaseClient projectOwner)
     {
         lock (balanceLock)

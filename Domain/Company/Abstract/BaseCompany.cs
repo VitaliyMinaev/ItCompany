@@ -6,15 +6,15 @@ namespace Domain.Company.Abstract;
 
 public abstract class BaseCompany : BaseDomainObject, ICompanyRequestReceiver
 {
-    public string Title { get; protected set; }
-    public BaseCompany(Guid id, string title) : base(id)
+    public string Name { get; protected set; }
+    public BaseCompany(Guid id, string name) : base(id)
     {
-        Title = title;
+        Name = name;
     }
 
-    public virtual void ChangeCompanyTitle(string newTitle)
+    public virtual void ChangeCompanyName(string newTitle)
     {
-        Title = newTitle;
+        Name = newTitle;
     }
     public abstract Guid ReceiveProject(ClientProject clientProject, BaseClient projectOwner);
     public abstract void StartWorkOnProject(Guid projectId);

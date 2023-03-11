@@ -31,6 +31,8 @@ partial class MainForm
     {
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.state3Button = new System.Windows.Forms.Button();
+            this.state2Button = new System.Windows.Forms.Button();
             this.testButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.actionsListBox = new System.Windows.Forms.ListBox();
@@ -42,8 +44,6 @@ partial class MainForm
             this.label5 = new System.Windows.Forms.Label();
             this.loadDataButton = new System.Windows.Forms.Button();
             this.state1Button = new System.Windows.Forms.Button();
-            this.state2Button = new System.Windows.Forms.Button();
-            this.state3Button = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,6 +67,24 @@ partial class MainForm
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(438, 214);
             this.panel1.TabIndex = 2;
+            // 
+            // state3Button
+            // 
+            this.state3Button.Location = new System.Drawing.Point(3, 46);
+            this.state3Button.Name = "state3Button";
+            this.state3Button.Size = new System.Drawing.Size(428, 35);
+            this.state3Button.TabIndex = 2;
+            this.state3Button.Text = "Add new client (State #3)";
+            this.state3Button.UseVisualStyleBackColor = true;
+            // 
+            // state2Button
+            // 
+            this.state2Button.Location = new System.Drawing.Point(3, 5);
+            this.state2Button.Name = "state2Button";
+            this.state2Button.Size = new System.Drawing.Size(428, 35);
+            this.state2Button.TabIndex = 1;
+            this.state2Button.Text = "Add random projects (State #2)";
+            this.state2Button.UseVisualStyleBackColor = true;
             // 
             // testButton
             // 
@@ -168,24 +186,6 @@ partial class MainForm
             this.state1Button.TabIndex = 11;
             this.state1Button.Text = "Start process (State #1)";
             this.state1Button.UseVisualStyleBackColor = true;
-            // 
-            // state2Button
-            // 
-            this.state2Button.Location = new System.Drawing.Point(3, 5);
-            this.state2Button.Name = "state2Button";
-            this.state2Button.Size = new System.Drawing.Size(428, 35);
-            this.state2Button.TabIndex = 1;
-            this.state2Button.Text = "Add random projects (State #2)";
-            this.state2Button.UseVisualStyleBackColor = true;
-            // 
-            // state3Button
-            // 
-            this.state3Button.Location = new System.Drawing.Point(3, 46);
-            this.state3Button.Name = "state3Button";
-            this.state3Button.Size = new System.Drawing.Size(428, 35);
-            this.state3Button.TabIndex = 2;
-            this.state3Button.Text = "Add new client (State #2)";
-            this.state3Button.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
