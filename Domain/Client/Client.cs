@@ -9,7 +9,7 @@ public class Client : BaseClient, IEnumerable<ClientProject>
     private List<ClientProject> _projects;
     private readonly ICompanyRequestReceiver _company;
     
-    public Client(ICompanyRequestReceiver company, Guid id, string username) : base(id, username)
+    public Client(ICompanyRequestReceiver company, Guid id, string username, double money) : base(id, username, money)
     {
         _company = company;
         _projects = new List<ClientProject>();

@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Domain.Client;
+using Domain.Client.Abstract;
 using Domain.Company;
 using Domain.Company.Abstract;
 using DomainConsoleTest.Logger;
@@ -15,32 +16,61 @@ var logger = loggerFactory.CreateLogger<LoggerAdapter>();
 var adapter = new LoggerAdapter(logger);
 
 var company = new Company(Guid.NewGuid(), "New company");
-var department1 = new Department(Guid.NewGuid(), "Department #1", new List<BaseEmployeeCommand>()
+company.SetLogger(adapter);
+var department1 = new Department(Guid.NewGuid(), "Department #1", company, new List<BaseEmployeeCommand>()
+{
+    new EmployeeCommand(Guid.NewGuid(), Random.Shared.Next(4, 7)),
+    new EmployeeCommand(Guid.NewGuid(), Random.Shared.Next(4, 7)),
+    new EmployeeCommand(Guid.NewGuid(), Random.Shared.Next(4, 7))
+});
+var department2 = new Department(Guid.NewGuid(), "Department #2", company, new List<BaseEmployeeCommand>()
 {
     new EmployeeCommand(Guid.NewGuid(), Random.Shared.Next(4, 7)),
     new EmployeeCommand(Guid.NewGuid(), Random.Shared.Next(4, 7)),
     new EmployeeCommand(Guid.NewGuid(), Random.Shared.Next(4, 7))
 });
 department1.SetLogger(adapter);
+department2.SetLogger(adapter);
 company.AddDepartment(department1);
+company.AddDepartment(department2);
 
-var clientProj = new ClientProject(Guid.NewGuid(), "Project #1",
-    3400, DateOnly.FromDateTime(DateTime.Now.AddMonths(2)));
-var client = new Client(company, Guid.NewGuid(), "Test user #1");
+var clientProj1 = new ClientProject(Guid.NewGuid(), "Project #1",
+    14400, DateOnly.FromDateTime(DateTime.Now.AddDays(14)));
+var clientProj2 = new ClientProject(Guid.NewGuid(), "Project #2",
+    18500, DateOnly.FromDateTime(DateTime.Now.AddDays(21)));
 
-var thread = new Thread(() =>
-{
-    var result = client.OrderProject(clientProj);
-    if (result == true)
-    {
-        programLogger.LogInformation("Project has been ordered!");
-    }
-    else
-    {
-        programLogger.LogCritical("Project has not been ordered!");
-    }
-});
+BaseClient client = new Client(company, Guid.NewGuid(), "Test user #1", 120000);
 
-thread.Start();
-programLogger.LogInformation("Going away ...");
+var thread1 = new Thread(() => StartProcess(client, clientProj1, company, programLogger));
+var thread2 = new Thread(() => StartProcess(client, clientProj2, company, programLogger));
+
+thread1.Start();
+thread2.Start();
+
 Console.ReadKey();
+
+LogComany(company, programLogger);
+
+void StartProcess(BaseClient client, ClientProject project, BaseCompany company, ILogger<Program> logger)
+{
+    try
+    {
+        var result = client.OrderProject(project);
+        if (result == false)
+        {
+            logger.LogCritical($"Project: {project.Title} has not been ordered!");
+        }
+    }
+    catch (Exception e)
+    {
+        logger.LogError(e, "Exception");
+    }
+}
+
+void LogComany(Company company, ILogger<Program> logger)
+{
+    foreach (var item in company.GetAllProjects())
+    {
+        logger.LogInformation($"Id: {item.Id}; Title: {item.Title}; Status: {item.Status}");
+    }
+}

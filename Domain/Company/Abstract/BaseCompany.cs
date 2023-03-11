@@ -18,4 +18,5 @@ public abstract class BaseCompany : BaseDomainObject, ICompanyRequestReceiver
     }
     public abstract bool ReceiveProject(ClientProject clientProject, BaseClient projectOwner);
     public abstract void AddDepartment(IDepartment department);
+    public abstract IEnumerable<CompanyProject> GetAllProjects();
 }

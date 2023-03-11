@@ -1,16 +1,21 @@
 using Domain.Client;
 using Domain.Client.Abstract;
+using Domain.Common.Abstract;
 using Domain.Common.Mappers;
 using Domain.Company.Abstract;
+using System.Collections.ObjectModel;
 
 namespace Domain.Company;
 
-public class Company : BaseCompany
+public class Company : BaseCompany, IMoneyWithdraw
 {
+    private readonly object balanceLock = new object();
+
     private List<BaseClient> _clients;
     private List<CompanyProject> _projects;
     protected List<IDepartment> _departments;
-    
+    private ILogger? _logger;
+
     private readonly int _projectLimit;
     public Company(Guid id, string title, int projectLimit = 100) : base(id, title)
     {
@@ -21,22 +26,39 @@ public class Company : BaseCompany
         _projectLimit = projectLimit;
     }
     
+    public void SetLogger(ILogger logger)
+    {
+        _logger = logger;
+    }
     public override bool ReceiveProject(ClientProject clientProject, BaseClient projectOwner)
     {
-        if (CanAcceptProject() == false)
-            return false;
-        _clients.Add(projectOwner);
-        
-        var departmentToReceive = GetAvailableDepartment();
-        if (departmentToReceive == null)
-            throw new InvalidOperationException("There is no available departments");
+        IDepartment? departmentToReceive = null;
+        CompanyProject? project = null;
+        lock (balanceLock)
+        {
+            if (CanAcceptProject() == false)
+                return false;
 
-        var project = clientProject.ToCompanyProject(CompanyProject.EvaluateComplexity(clientProject.Deadline));
-        departmentToReceive.ReceiveProject(project);
+            AddClient(projectOwner);
+
+            departmentToReceive = GetAvailableDepartment();
+            if (departmentToReceive == null)
+                throw new InvalidOperationException("There is no available departments");
+
+            project = clientProject.ToCompanyProject(projectOwner);
+            _logger?.LogInformation($"{project.Id}: Total price for project: {project.TotalPrice}");
+
+            if (projectOwner.Money < project.TotalPrice)
+            {
+                _logger?.LogError($"{project.Id}: Can not start working on project. " +
+                    $"Client does not have enough money");
+                return false;
+            }
+            departmentToReceive.ReceiveProject(project);
+            _projects.Add(project);
+        }
         departmentToReceive.StartWorkOnProject();
-        
-        _projects.Add(project);
-        
+
         return true;
     }
     public override void AddDepartment(IDepartment department)
@@ -44,6 +66,15 @@ public class Company : BaseCompany
         _departments.Add(department);
     }
 
+    private void AddClient(BaseClient client)
+    {
+        var exists = _clients.FirstOrDefault(x => x.Id == client.Id);
+
+        if (exists == null)
+            return;
+
+        _clients.Add(client);
+    } 
 
     protected virtual bool CanAcceptProject()
     {
@@ -57,5 +88,13 @@ public class Company : BaseCompany
     protected virtual IDepartment? GetAvailableDepartment()
     {
         return _departments.FirstOrDefault(x => x.CanReceiveProject() == true);
+    }
+
+    public override IEnumerable<CompanyProject> GetAllProjects() => new ReadOnlyCollection<CompanyProject>(_projects);
+
+    public bool WithdrawMoney(CompanyProject project, double money)
+    {
+        var client = project.ProjectOwner;
+        return client.WithdrawMoney(money);
     }
 }
