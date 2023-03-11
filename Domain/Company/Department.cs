@@ -65,19 +65,23 @@ public class Department : BaseDomainObject, IDepartment
     
     public bool ReceiveProject(CompanyProject project)
     {
-        lock(project)
-        {
-            if (CanReceiveProject() == false)
-                return false;
+        if (CanReceiveProject() == false)
+            return false;
 
+        lock (project)
+        {
             _project = project;
-            return true;
         }
+
+        return true;
     }
 
     public bool AddCommand(BaseEmployeeCommand command)
     {
-        _commands.Add(command);
+        lock(command)
+        {
+            _commands.Add(command);
+        }
         return true;
     }
 
@@ -88,15 +92,15 @@ public class Department : BaseDomainObject, IDepartment
         if (exist == null)
             return false;
         
-        return _commands.Remove(exist);
+        lock(exist)
+        {
+            return _commands.Remove(exist);
+        }
     }
 
     public bool CanReceiveProject()
     {
-        lock(balanceLock)
-        {
-            return _project == null;
-        }
+        return _project == null;
     }
 
     public IEnumerator<BaseEmployeeCommand> GetEnumerator()
@@ -106,5 +110,13 @@ public class Department : BaseDomainObject, IDepartment
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    public bool HasProject(Guid projectId)
+    {
+        if (_project == null)
+            return false;
+
+        return _project.Id == projectId;
     }
 }

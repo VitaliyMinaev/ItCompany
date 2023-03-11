@@ -5,5 +5,5 @@ namespace Domain.Company.Abstract;
 
 public interface ICompanyRequestReceiver
 {
-    bool ReceiveProject(ClientProject clientProject, BaseClient projectOwner);
+    Guid ReceiveProject(ClientProject clientProject, BaseClient projectOwner);
 }

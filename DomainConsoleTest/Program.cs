@@ -40,9 +40,11 @@ var clientProj2 = new ClientProject(Guid.NewGuid(), "Project #2",
     18500, DateOnly.FromDateTime(DateTime.Now.AddDays(21)));
 
 BaseClient client = new Client(company, Guid.NewGuid(), "Test user #1", 120000);
+var id1 = client.OrderProject(clientProj1);
+var id2 =client.OrderProject(clientProj2);
 
-var thread1 = new Thread(() => StartProcess(client, clientProj1, company, programLogger));
-var thread2 = new Thread(() => StartProcess(client, clientProj2, company, programLogger));
+var thread1 = new Thread(() => StartProcess(id1, company, programLogger));
+var thread2 = new Thread(() => StartProcess(id2, company, programLogger));
 
 thread1.Start();
 thread2.Start();
@@ -51,15 +53,11 @@ Console.ReadKey();
 
 LogComany(company, programLogger);
 
-void StartProcess(BaseClient client, ClientProject project, BaseCompany company, ILogger<Program> logger)
+void StartProcess(Guid projectId, BaseCompany company, ILogger<Program> logger)
 {
     try
     {
-        var result = client.OrderProject(project);
-        if (result == false)
-        {
-            logger.LogCritical($"Project: {project.Title} has not been ordered!");
-        }
+        company.StartWorkOnProject(projectId);
     }
     catch (Exception e)
     {

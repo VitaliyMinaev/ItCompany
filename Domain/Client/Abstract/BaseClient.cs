@@ -4,6 +4,8 @@ namespace Domain.Client.Abstract;
 
 public abstract class BaseClient : BaseDomainObject
 {
+    private readonly object balanceLock = new object();
+
     public string Username { get; protected set; }
     public double Money { get; private set; }
     protected BaseClient(Guid id, string username, double money) : base(id)
@@ -16,12 +18,16 @@ public abstract class BaseClient : BaseDomainObject
     {
         Username = newUsername;
     }
-    public abstract bool OrderProject(ClientProject project);
+    public abstract Guid OrderProject(ClientProject project);
     public virtual void AddMoney(double money)
     {
         if (money < 0)
             throw new InvalidOperationException();
-        Money += money;
+        
+        lock(balanceLock)
+        {
+            Money += money;
+        }
     }
     public virtual bool WithdrawMoney(double money)
     {
@@ -30,7 +36,11 @@ public abstract class BaseClient : BaseDomainObject
             return false;
         }
 
-        Money -= money;
+        lock(balanceLock)
+        {
+            Money -= money;
+        }
+
         return true;
     }
 }

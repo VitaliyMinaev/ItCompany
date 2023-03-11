@@ -8,5 +8,6 @@ public interface IDepartment : IEnumerable<BaseEmployeeCommand>
     bool AddCommand(BaseEmployeeCommand command);
     bool RemoveCommand(Guid id);
 
+    bool HasProject(Guid projectId);
     bool CanReceiveProject();
 }

@@ -15,15 +15,15 @@ public class Client : BaseClient, IEnumerable<ClientProject>
         _projects = new List<ClientProject>();
     }
 
-    public override bool OrderProject(ClientProject project)
+    public override Guid OrderProject(ClientProject project)
     {
-        var result = _company.ReceiveProject(project, this);
+        var projectId = _company.ReceiveProject(project, this);
 
-        if (result == false)
-            return false;
+        if (projectId == Guid.Empty)
+            return Guid.Empty;
 
         _projects.Add(project);
-        return true;
+        return projectId;
     }
 
     public IEnumerator<ClientProject> GetEnumerator()

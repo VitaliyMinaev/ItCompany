@@ -30,36 +30,34 @@ public class Company : BaseCompany, IMoneyWithdraw
     {
         _logger = logger;
     }
-    public override bool ReceiveProject(ClientProject clientProject, BaseClient projectOwner)
+    public override Guid ReceiveProject(ClientProject clientProject, BaseClient projectOwner)
     {
-        IDepartment? departmentToReceive = null;
-        CompanyProject? project = null;
         lock (balanceLock)
         {
             if (CanAcceptProject() == false)
-                return false;
+                return Guid.Empty;
 
             AddClient(projectOwner);
 
-            departmentToReceive = GetAvailableDepartment();
+            var departmentToReceive = GetAvailableDepartment();
             if (departmentToReceive == null)
                 throw new InvalidOperationException("There is no available departments");
 
-            project = clientProject.ToCompanyProject(projectOwner);
+            var project = clientProject.ToCompanyProject(projectOwner);
             _logger?.LogInformation($"{project.Id}: Total price for project: {project.TotalPrice}");
 
             if (projectOwner.Money < project.TotalPrice)
             {
                 _logger?.LogError($"{project.Id}: Can not start working on project. " +
                     $"Client does not have enough money");
-                return false;
+                return Guid.Empty;
             }
+
             departmentToReceive.ReceiveProject(project);
             _projects.Add(project);
-        }
-        departmentToReceive.StartWorkOnProject();
 
-        return true;
+            return project.Id;
+        }
     }
     public override void AddDepartment(IDepartment department)
     {
@@ -73,7 +71,10 @@ public class Company : BaseCompany, IMoneyWithdraw
         if (exists == null)
             return;
 
-        _clients.Add(client);
+        lock(client)
+        {
+            _clients.Add(client);
+        }
     } 
 
     protected virtual bool CanAcceptProject()
@@ -96,5 +97,15 @@ public class Company : BaseCompany, IMoneyWithdraw
     {
         var client = project.ProjectOwner;
         return client.WithdrawMoney(money);
+    }
+
+    public override void StartWorkOnProject(Guid projectId)
+    {
+        var departmentWithProject = _departments.FirstOrDefault(x => x.HasProject(projectId));
+
+        if (departmentWithProject == null)
+            throw new InvalidOperationException();
+
+        departmentWithProject.StartWorkOnProject();
     }
 }
