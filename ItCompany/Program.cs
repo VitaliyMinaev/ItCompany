@@ -1,4 +1,4 @@
-namespace ItCompany;
+namespace ItCompany.UI;
 
 static class Program
 {
