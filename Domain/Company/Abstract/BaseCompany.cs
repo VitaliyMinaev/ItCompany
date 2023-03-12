@@ -20,4 +20,6 @@ public abstract class BaseCompany : BaseDomainObject, ICompanyRequestReceiver
     public abstract void StartWorkOnProject(Guid projectId);
     public abstract void AddDepartment(IDepartment department);
     public abstract IEnumerable<CompanyProject> GetAllProjects();
+    public abstract IEnumerable<BaseClient> GetClients();
+    public abstract IEnumerable<IDepartment> GetDepartments();
 }

@@ -1,8 +1,9 @@
 using Domain.Common.Abstract;
+using System.Collections;
 
 namespace Domain.Client.Abstract;
 
-public abstract class BaseClient : BaseDomainObject
+public abstract class BaseClient : BaseDomainObject, IEnumerable<ClientProject>
 {
     private readonly object balanceLock = new object();
 
@@ -42,5 +43,11 @@ public abstract class BaseClient : BaseDomainObject
         }
 
         return true;
+    }
+
+    public abstract IEnumerator<ClientProject> GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

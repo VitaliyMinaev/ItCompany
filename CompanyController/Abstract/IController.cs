@@ -1,11 +1,12 @@
 ﻿using Domain.Client;
 using Domain.Company.Abstract;
+using ItCompany.UI.Models;
 
 namespace CompanyController.Abstract;
 
 public interface IController
 {
-    BaseCompany ConfigureCompany();
-    IEnumerable<Client> ConfigureClients(int countOfClients, BaseCompany companyToBind);
-    void StartProcess(BaseCompany company, Guid projectId);
+    CompanyViewModel ConfigureCompany();
+    CompanyViewModel ConfigureClients(int countOfClients, CompanyViewModel companyToBind);
+    void StartProcess(CompanyViewModel company, Guid projectId);
 }

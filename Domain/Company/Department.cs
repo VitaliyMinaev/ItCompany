@@ -13,6 +13,13 @@ public class Department : BaseDomainObject, IDepartment
 
     private List<BaseEmployeeCommand> _commands;
     private CompanyProject? _project;
+    public CompanyProject Project
+    {
+        get
+        {
+            return _project;
+        }
+    }
     public string Title { get; private set; }
     private ILogger? _logger;
     private IMoneyWithdraw _moneyWithdraw;
@@ -47,17 +54,17 @@ public class Department : BaseDomainObject, IDepartment
         {
             // Take money
             var withdrawResult = _moneyWithdraw.WithdrawMoney(_project, _project.CalculatePricePerIteration());
-            _logger?.LogInformation($"{_project.Id}: Price per iteration: {_project.CalculatePricePerIteration()}");
+            _logger?.LogInformation($"{_project.Title}: Price per iteration: {_project.CalculatePricePerIteration()}");
             if (withdrawResult == false)
             {
-                _logger?.LogError($"{_project.Id}: Does not have money to continue!");
+                _logger?.LogError($"{_project.Title}: Does not have money to continue!");
                 return;
             }
 
             Thread.Sleep(SleepTimeInMs);
 
             double progress = _project.UpdateProgress();
-            _logger?.LogInformation($"{_project.Id}: Current progress in project: {progress}");
+            _logger?.LogInformation($"{_project.Title}: Current progress in project: {progress}");
         }
 
         _logger?.LogInformation($"Project: {_project.Title} has been done!");

@@ -50,11 +50,11 @@ public class Company : BaseCompany, IMoneyWithdraw
                 throw new InvalidOperationException("There is no available departments");
 
             var project = clientProject.ToCompanyProject(projectOwner);
-            _logger?.LogInformation($"{project.Id}: Total price for project: {project.TotalPrice}");
+            _logger?.LogInformation($"{project.Title}: Total price for project: {project.TotalPrice}");
 
             if (projectOwner.Money < project.TotalPrice)
             {
-                _logger?.LogError($"{project.Id}: Can not start working on project. " +
+                _logger?.LogError($"{project.Title}: Can not start working on project. " +
                     $"Client does not have enough money");
                 return Guid.Empty;
             }
@@ -113,5 +113,15 @@ public class Company : BaseCompany, IMoneyWithdraw
             throw new InvalidOperationException();
 
         departmentWithProject.StartWorkOnProject();
+    }
+
+    public override IEnumerable<BaseClient> GetClients()
+    {
+        return _clients;
+    }
+
+    public override IEnumerable<IDepartment> GetDepartments()
+    {
+        return _departments;
     }
 }

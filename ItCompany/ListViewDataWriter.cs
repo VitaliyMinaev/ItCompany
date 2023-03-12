@@ -6,21 +6,6 @@ using System.Threading.Tasks;
 
 namespace ItCompany.UI;
 
-class Tester
-{
-    public string Title { get; set; }
-    public Tester()
-    {
-        Title = "Some value: " + Random.Shared.Next(0, 255);
-    }
-
-    public override string ToString()
-    {
-        return Title; ;
-    }
-}
-
-
 public class ListViewDataWriter
 {
     private readonly ListBox _listView;

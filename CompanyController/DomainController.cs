@@ -1,22 +1,24 @@
 ﻿using CompanyController.Abstract;
 using Domain.Client;
-using Domain.Common.Abstract;
 using Domain.Company;
-using Domain.Company.Abstract;
+using ItCompany.UI.Models;
+using Mappers;
 
 namespace CompanyController;
 
 public class DomainController : IController
 {
-    private readonly ILogger _logger;
+    private readonly IFormLogger _logger;
+    private readonly List<Company> _companies;
 
     private int _companyCount;
     private int _departmentCount;
     private int _usernameCount;
     private int _projectCount;
-    public DomainController(ILogger logger)
+    public DomainController(IFormLogger logger)
     {
-        _logger = logger;   
+        _logger = logger;
+        _companies = new List<Company>();
 
         _companyCount = 0;
         _departmentCount = 0;
@@ -24,38 +26,50 @@ public class DomainController : IController
         _projectCount = 0;
     }
 
-    public IEnumerable<Client> ConfigureClients(int countOfClients, BaseCompany companyToBind)
+    public CompanyViewModel ConfigureClients(int countOfClients, CompanyViewModel company)
     {
+        Company? companyToBind = _companies.FirstOrDefault(x => x.Id == company.Id);
+
+        if (companyToBind == null)
+            throw new InvalidOperationException();
+
         for (int i = 0; i < countOfClients; i++)
         {
             var client = new Client(companyToBind, Guid.NewGuid(), $"User #{_usernameCount++}"
                 , Random.Shared.Next(20000, 50000));
 
-            client.OrderProject(new ClientProject(Guid.NewGuid(), $"Project #{_projectCount++}", 
+            client.OrderProject(new ClientProject(Guid.NewGuid(), $"Project #{_projectCount++}",
                 Random.Shared.Next(2200, 6700), DateOnly.FromDateTime(DateTime.Now.AddDays(Random.Shared.Next(14, 141)))));
-
-            yield return new Client(companyToBind, Guid.NewGuid(), $"User #{_usernameCount++}"
-                , Random.Shared.Next(20000, 50000));
+            client.OrderProject(new ClientProject(Guid.NewGuid(), $"Project #{_projectCount++}",
+                Random.Shared.Next(1800, 4500), DateOnly.FromDateTime(DateTime.Now.AddDays(Random.Shared.Next(14, 141)))));
         }
+
+        return companyToBind.ToModel();
     }
 
-    public BaseCompany ConfigureCompany()
+    public void StartProcess(CompanyViewModel company, Guid projectId)
     {
-        var _companyBuilder = new CompanyBuilder();
+        var domain = _companies.FirstOrDefault(x => x.Id == company.Id);
+        if (domain == null)
+            throw new InvalidOperationException();
 
-        _companyBuilder.SetCompanyName($"Company: #{_companyCount++}");
+        domain.StartWorkOnProject(projectId);
+    }
+
+    public CompanyViewModel ConfigureCompany()
+    {
+        var companyBuilder = new CompanyBuilder();
+
+        companyBuilder.SetCompanyName($"Company: #{_companyCount++}");
         for (int i = 0; i < 5; i++)
         {
-            _companyBuilder.CreateDepartmentAndAddToCompany($"Department #{_departmentCount++}");
+            companyBuilder.CreateDepartmentAndAddToCompany($"Department #{_departmentCount++}");
         }
 
-        _companyBuilder.AddLogger(_logger);
-        
-        return _companyBuilder.Build();
-    }
+        companyBuilder.AddLogger(_logger);
 
-    public void StartProcess(BaseCompany company, Guid projectId)
-    {
-        company.StartWorkOnProject(projectId);
+        var company = companyBuilder.Build();
+        _companies.Add(company);
+        return company.ToModel();
     }
 }

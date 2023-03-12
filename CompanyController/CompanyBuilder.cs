@@ -1,5 +1,4 @@
 ﻿using CompanyController.Abstract;
-using Domain.Common.Abstract;
 using Domain.Company;
 using Domain.Company.Abstract;
 
@@ -14,7 +13,7 @@ internal class CompanyBuilder : ICompanyBuilder
         _company = new Company(Guid.NewGuid(), "The Company");
     }
 
-    public void AddLogger(ILogger logger)
+    public void AddLogger(IFormLogger logger)
     {
         _company.SetLogger(logger);
     }

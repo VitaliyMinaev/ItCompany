@@ -4,7 +4,7 @@ using Domain.Company.Abstract;
 
 namespace Domain.Client;
 
-public class Client : BaseClient, IEnumerable<ClientProject>
+public class Client : BaseClient
 {
     private List<ClientProject> _projects;
     private readonly ICompanyRequestReceiver _company;
@@ -26,12 +26,13 @@ public class Client : BaseClient, IEnumerable<ClientProject>
         return projectId;
     }
 
-    public IEnumerator<ClientProject> GetEnumerator()
+    public override IEnumerator<ClientProject> GetEnumerator()
     {
         return _projects.GetEnumerator();
     }
-    IEnumerator IEnumerable.GetEnumerator()
+
+    public static implicit operator List<object>(Client v)
     {
-        return GetEnumerator();
+        throw new NotImplementedException();
     }
 }
