@@ -49,12 +49,12 @@ public class Department : BaseDomainObject, IDepartment
             throw new InvalidOperationException("Can not start working. Project does not exist");
 
         int iterations = _project.CountOfIteration;
+        _logger?.LogInformation($"{_project.Title}: Price per iteration: {_project.CalculatePricePerIteration()}");
 
         for (int i = 0; i < iterations; i++)
         {
             // Take money
             var withdrawResult = _moneyWithdraw.WithdrawMoney(_project, _project.CalculatePricePerIteration());
-            _logger?.LogInformation($"{_project.Title}: Price per iteration: {_project.CalculatePricePerIteration()}");
             if (withdrawResult == false)
             {
                 _logger?.LogError($"{_project.Title}: Does not have money to continue!");
@@ -64,7 +64,7 @@ public class Department : BaseDomainObject, IDepartment
             Thread.Sleep(SleepTimeInMs);
 
             double progress = _project.UpdateProgress();
-            _logger?.LogInformation($"{_project.Title}: Current progress in project: {progress}");
+            _logger?.LogInformation($"{_project.Title}: Current progress in project: {Math.Round(progress, 2)}");
         }
 
         _logger?.LogInformation($"Project: {_project.Title} has been done!");

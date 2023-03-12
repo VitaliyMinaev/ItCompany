@@ -10,7 +10,7 @@ public class DepartmentViewModel : IViewModel
     public ProjectViewModel? Project { get; set; }
     public override string ToString()
     {
-        return $"{Title}";
+        return Title;
     }
     public string GetAllDataInStringFormat()
     {

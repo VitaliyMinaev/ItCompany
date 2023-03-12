@@ -74,7 +74,7 @@ public class Company : BaseCompany, IMoneyWithdraw
     {
         var exists = _clients.FirstOrDefault(x => x.Id == client.Id);
 
-        if (exists == null)
+        if (exists != null)
             return;
 
         lock(client)

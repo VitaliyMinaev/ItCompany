@@ -12,6 +12,10 @@ public class ProjectViewModel : IViewModel
     public string Status { get; set; }
     public ClientViewModel? ProjectOwner { get; set; }
 
+    public override string ToString()
+    {
+        return Name;
+    }
     public string GetAllDataInStringFormat()
     {
         return $"Id: {Id}\nName: {Name}\nDeadline: {Deadline}\nCount of iterations: {CountOfIteration}\n" +

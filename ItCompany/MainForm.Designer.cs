@@ -33,6 +33,7 @@ partial class MainForm
             this.panel1 = new System.Windows.Forms.Panel();
             this.state3Button = new System.Windows.Forms.Button();
             this.state2Button = new System.Windows.Forms.Button();
+            this.state1Button = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.actionsListBox = new System.Windows.Forms.ListBox();
             this.clientsListBox = new System.Windows.Forms.ListBox();
@@ -42,9 +43,9 @@ partial class MainForm
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.loadDataButton = new System.Windows.Forms.Button();
-            this.state1Button = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.departmentsListBox = new System.Windows.Forms.ListBox();
+            this.updateButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,28 +64,41 @@ partial class MainForm
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.state3Button);
             this.panel1.Controls.Add(this.state2Button);
+            this.panel1.Controls.Add(this.state1Button);
             this.panel1.Location = new System.Drawing.Point(406, 483);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(290, 93);
+            this.panel1.Size = new System.Drawing.Size(290, 132);
             this.panel1.TabIndex = 2;
             // 
             // state3Button
             // 
-            this.state3Button.Location = new System.Drawing.Point(3, 46);
+            this.state3Button.Location = new System.Drawing.Point(3, 87);
             this.state3Button.Name = "state3Button";
             this.state3Button.Size = new System.Drawing.Size(280, 35);
             this.state3Button.TabIndex = 2;
             this.state3Button.Text = "Add new client (State #3)";
             this.state3Button.UseVisualStyleBackColor = true;
+            this.state3Button.Click += new System.EventHandler(this.state3Button_Click);
             // 
             // state2Button
             // 
-            this.state2Button.Location = new System.Drawing.Point(3, 5);
+            this.state2Button.Location = new System.Drawing.Point(3, 46);
             this.state2Button.Name = "state2Button";
             this.state2Button.Size = new System.Drawing.Size(280, 35);
             this.state2Button.TabIndex = 1;
             this.state2Button.Text = "Add random projects (State #2)";
             this.state2Button.UseVisualStyleBackColor = true;
+            this.state2Button.Click += new System.EventHandler(this.state2Button_Click);
+            // 
+            // state1Button
+            // 
+            this.state1Button.Location = new System.Drawing.Point(3, 5);
+            this.state1Button.Name = "state1Button";
+            this.state1Button.Size = new System.Drawing.Size(280, 35);
+            this.state1Button.TabIndex = 11;
+            this.state1Button.Text = "Start process (State #1)";
+            this.state1Button.UseVisualStyleBackColor = true;
+            this.state1Button.Click += new System.EventHandler(this.state1Button_Click);
             // 
             // label2
             // 
@@ -101,7 +115,7 @@ partial class MainForm
             this.actionsListBox.ItemHeight = 20;
             this.actionsListBox.Location = new System.Drawing.Point(12, 32);
             this.actionsListBox.Name = "actionsListBox";
-            this.actionsListBox.Size = new System.Drawing.Size(385, 544);
+            this.actionsListBox.Size = new System.Drawing.Size(385, 584);
             this.actionsListBox.TabIndex = 4;
             // 
             // clientsListBox
@@ -118,10 +132,11 @@ partial class MainForm
             // 
             this.companiesListBox.FormattingEnabled = true;
             this.companiesListBox.ItemHeight = 20;
-            this.companiesListBox.Location = new System.Drawing.Point(702, 32);
+            this.companiesListBox.Location = new System.Drawing.Point(702, 467);
             this.companiesListBox.Name = "companiesListBox";
-            this.companiesListBox.Size = new System.Drawing.Size(142, 264);
+            this.companiesListBox.Size = new System.Drawing.Size(142, 104);
             this.companiesListBox.TabIndex = 6;
+            this.companiesListBox.SelectedIndexChanged += new System.EventHandler(this.companiesListBox_SelectedIndexChanged);
             // 
             // projectsListBox
             // 
@@ -145,7 +160,7 @@ partial class MainForm
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(702, 9);
+            this.label4.Location = new System.Drawing.Point(702, 444);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(83, 20);
             this.label4.TabIndex = 9;
@@ -170,20 +185,10 @@ partial class MainForm
             this.loadDataButton.UseVisualStyleBackColor = true;
             this.loadDataButton.Click += new System.EventHandler(this.loadDataButton_Click);
             // 
-            // state1Button
-            // 
-            this.state1Button.Location = new System.Drawing.Point(12, 580);
-            this.state1Button.Name = "state1Button";
-            this.state1Button.Size = new System.Drawing.Size(231, 35);
-            this.state1Button.TabIndex = 11;
-            this.state1Button.Text = "Start process (State #1)";
-            this.state1Button.UseVisualStyleBackColor = true;
-            this.state1Button.Click += new System.EventHandler(this.state1Button_Click);
-            // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(702, 309);
+            this.label6.Location = new System.Drawing.Point(702, 9);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(95, 20);
             this.label6.TabIndex = 13;
@@ -193,20 +198,30 @@ partial class MainForm
             // 
             this.departmentsListBox.FormattingEnabled = true;
             this.departmentsListBox.ItemHeight = 20;
-            this.departmentsListBox.Location = new System.Drawing.Point(702, 332);
+            this.departmentsListBox.Location = new System.Drawing.Point(702, 32);
             this.departmentsListBox.Name = "departmentsListBox";
-            this.departmentsListBox.Size = new System.Drawing.Size(142, 244);
+            this.departmentsListBox.Size = new System.Drawing.Size(142, 404);
             this.departmentsListBox.TabIndex = 12;
             this.departmentsListBox.SelectedIndexChanged += new System.EventHandler(this.departmentsListBox_SelectedIndexChanged);
+            // 
+            // updateButton
+            // 
+            this.updateButton.Location = new System.Drawing.Point(702, 577);
+            this.updateButton.Name = "updateButton";
+            this.updateButton.Size = new System.Drawing.Size(142, 35);
+            this.updateButton.TabIndex = 14;
+            this.updateButton.Text = "Update data";
+            this.updateButton.UseVisualStyleBackColor = true;
+            this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(852, 621);
+            this.Controls.Add(this.updateButton);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.departmentsListBox);
-            this.Controls.Add(this.state1Button);
             this.Controls.Add(this.loadDataButton);
             this.Controls.Add(this.clientsListBox);
             this.Controls.Add(this.label5);
@@ -244,4 +259,5 @@ partial class MainForm
     private Button state2Button;
     private Label label6;
     private ListBox departmentsListBox;
+    private Button updateButton;
 }
